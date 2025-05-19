@@ -4,10 +4,36 @@
 <c:set var="pageTitle" value="ARTICLE DETAIL"></c:set>
 <%@ include file="../common/head.jspf"%>
 
+<!-- <iframe src="http://localhost:8080/usr/article/doIncreaseHitCount?id=2" frameborder="0"></iframe> -->
 
-<section class="mt-8 text-xl px-4">
+<script>
+	const params = {};
+	params.id = parseInt('${param.id }');
+</script>
+
+<script>
+	function ArticleDetail__doIncreaseHitCount() {
+		$.get('../article/doIncreaseHitCountRd', {
+			id : params.id,
+			ajaxMode : 'Y'
+		}, function(data) {
+			console.log(data);
+			console.log(data.data1);
+			console.log(data.msg);
+			$('.article-detail__hit-count').html(data.data1);
+		}, 'json');
+	}
+
+	$(function() {
+		ArticleDetail__doIncreaseHitCount();
+		// 		setTimeout(ArticleDetail__doIncreaseHitCount, 2000);
+
+	})
+</script>
+
+<section class="mt-24 text-xl px-4">
 	<div class="mx-auto">
-		<table border="1" cellspacing="0" cellpadding="5" style="width: 100%; border-collapse: collapse;">
+		<table class="table" border="1" cellspacing="0" cellpadding="5" style="width: 100%; border-collapse: collapse;">
 			<tbody>
 				<tr>
 					<th style="text-align: center;">ID</th>
@@ -26,6 +52,18 @@
 					<td style="text-align: center;">${article.extra__writer }</td>
 				</tr>
 				<tr>
+					<th style="text-align: center;">BoardId</th>
+					<td style="text-align: center;">${article.boardId }</td>
+				</tr>
+
+
+				<tr>
+					<th style="text-align: center;">VIEWS</th>
+					<td style="text-align: center;">
+						<span class="article-detail__hit-count">${article.hitCount }</span>
+					</td>
+				</tr>
+				<tr>
 					<th style="text-align: center;">Title</th>
 					<td style="text-align: center;">${article.title }</td>
 				</tr>
@@ -35,18 +73,31 @@
 				</tr>
 			</tbody>
 		</table>
+
+		<div class="ReactBar" style="text-align: center;">
+		<!--<div style="text-align: center;">LIKE / DISLIKE ${usersReaction }</div>-->
+			<div style="text-align: center;">
+				<a href="/usr/reactionPoint/doGoodReaction?relTypeCode=article&relId=${param.id }&replaceUri=${rq.currentUri}"
+					class="btn btn-outline btn-success">👍 LIKE ${article.goodReactionPoint }</a>
+				<a href="/usr/reactionPoint/doBadReaction?relTypeCode=article&relId=${param.id }&replaceUri=${rq.currentUri}"
+					class="btn btn-outline btn-error">👎 DISLIKE ${article.badReactionPoint}</a>
+			</div>
+		</div>
+
 		<div class="btns">
-			<button type="button" onclick="history.back();">뒤로가기</button>
+			<button class="btn btn-ghost" type="button" onclick="history.back();">뒤로가기</button>
 			<c:if test="${article.userCanModify }">
-				<a href="../article/modify?id=${article.id}">수정</a>
+				<a class="btn btn-ghost" href="../article/modify?id=${article.id}">수정</a>
 			</c:if>
 			<c:if test="${article.userCanDelete }">
-				<a href="../article/doDelete?id=${article.id}">삭제</a>
+				<a class="btn btn-ghost" href="../article/doDelete?id=${article.id}">삭제</a>
 			</c:if>
 		</div>
 
 	</div>
 </section>
+
+
 
 
 
