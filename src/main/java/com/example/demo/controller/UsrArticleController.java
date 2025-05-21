@@ -124,6 +124,7 @@ public class UsrArticleController {
 		}
 
 		model.addAttribute("article", article);
+		model.addAttribute("usersReaction", usersReactionRd.getData1());
 		model.addAttribute("isAlreadyAddGoodRp",
 				reactionPointService.isAlreadyAddGoodRp(rq.getLoginedMemberId(), id, "article"));
 		model.addAttribute("isAlreadyAddBadRp",
@@ -142,7 +143,8 @@ public class UsrArticleController {
 			return increaseHitCountRd;
 		}
 
-		return ResultData.newData(increaseHitCountRd, "hitCount", articleService.getArticleHitCount(id));
+		return ResultData.from(increaseHitCountRd.getResultCode(), increaseHitCountRd.getMsg(), "hitCount",
+				articleService.getArticleHitCount(id), "articleId", id);
 	}
 
 	@RequestMapping("/usr/article/write")
